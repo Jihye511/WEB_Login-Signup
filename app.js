@@ -3,7 +3,7 @@ var express = require("express");
 var path = require("path");
 var logger = require("morgan");
 const bodyParser = require('body-parser');
-const port=4000;
+const port=3800;
 
 var indexRouter = require("./routes/index");
 const loginRouter = require("./routes/login");
@@ -49,8 +49,8 @@ app.use(function (err, req, res, next) {
   res.send("something wrong!");
 });
 
-app.listen(port, () => {
-  console.log(`서버가 http://localhost:${port} 에서 실행 중입니다.`);
-});
+// app.listen(port, () => {
+//   console.log(`서버가 http://localhost:${port} 에서 실행 중입니다.`);
+// });
 
 module.exports = app;
