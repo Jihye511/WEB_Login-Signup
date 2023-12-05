@@ -3,7 +3,7 @@ var express = require("express");
 var path = require("path");
 var logger = require("morgan");
 const bodyParser = require('body-parser');
-const port=3800;
+//const port=3800;
 
 var indexRouter = require("./routes/index");
 const loginRouter = require("./routes/login");

@@ -54,7 +54,7 @@
 
             try {
                 const response = await fetch(`/join/checkDuplicate?username=${username}`);
-                const data = await response.json();
+                const data = await response.text();
                 //data 변수는 서버로부터 받은 응답 데이터를 담고 있는 변수
                 //data.duplicate는 duplicate라는 키를 가진 값을 읽는다는 뜻
 

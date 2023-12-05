@@ -44,7 +44,7 @@ router.get('/checkDuplicate', async(req,res)=>{
     const isDuplicate = userList.some(user => user.user_id === user_id);
 
     console.log("중복이면 ture: ",isDuplicate);
-    res.json({ duplicate: isDuplicate });
+    res.send({ duplicate: isDuplicate });
   }catch (error) {
     console.error('Error during registration:', error);
     res.status(500).send('Internal Server Error');
