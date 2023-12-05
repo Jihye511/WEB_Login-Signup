@@ -1,0 +1,73 @@
+<!-- login.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>HTML 5 Boilerplate</title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+
+  </head>
+  <body>
+    <p style="font-size: large;">이지혜 2020204041</p>
+    <p style="font-size: large;">로그인</p>
+    <div class="container">
+      <div>ID : <input type="text" id="name"/></div>
+      <div>PASSWORD : <input type="password" id="password"/></div>
+      <div class="check">
+        <input type="checkbox" id="rememberMe"><label>로그인 유지하기</label>
+      </div>
+      <button id="loginButton" onclick="login();">로그인</button>
+      <button id="joinButton">회원가입하기</button>
+      
+    </div>
+    <!-- <script src="./login.js"></script> -->
+    <script>
+        document.getElementById('joinButton').addEventListener('click', function() {
+        window.location.href = '/join'; // join.js로 이동
+        });
+
+
+        function login(){
+          const user_id = document.getElementById('name').value;
+          const password = document.getElementById('password').value;
+          const rememberMe = document.getElementById('rememberMe').checked;
+
+
+          console.log("login함수 실행!!!");
+
+          fetch('/login/doLogin',{
+            method:"POST",
+            headers:{
+              "Content-Type":"application/json"
+            },
+            body: JSON.stringify({
+              user_id : user_id,
+              password: password,
+            })
+          })
+          .then((response) => response.json())
+          .then((data) => {
+              if (data.success){
+          	    alert("드디어 로그인 성공이다");
+                console.log(data.token);
+                const storage = rememberMe ? localStorage : sessionStorage;
+                storage.setItem('token', data.token);
+                window.location.href = '/';
+                // handleLogin(response.token);
+
+	        }else {
+            alert("아이디와 비밀번호를 다시 확인해주세요.")
+          }
+        })
+          .catch((error) =>{
+              console.error(new Error("로그인 중 에러 발생"));
+            });
+          }
+        
+    </script>
+    <!-- <script src="../routes/login.js"></script> -->
+  </body>
+</html>

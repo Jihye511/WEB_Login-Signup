@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>회원가입 페이지</title>
+  </head>
+  <body>
+    <h1>회원가입 페이지</h1>
+    <form method ="post" action="/join">
+        <p style="font-size: large;">회원 가입</p>
+        <div class="container">
+            <div style="display: flex; align-items: center;">
+                <div>ID : <input type="text" id="username" style="display: inline-block;" oninput="resetRegistration();"/></div>
+                <button onclick="checkDuplicate();">아이디 중복 확인</button>
+            </div>
+            <p id="id_duplicate"; style="color: red;"></p>
+
+            <label for = "pw1">비밀번호:</label>
+            <input type="password" id="pw1" name="pw1" oninput="checkPassword()" required>
+
+            <br>
+            
+            <label for = "pw2">비밀번호 확인:</label>
+            <input type="password" id="pw2" name="pw2" oninput="checkPassword()" required>
+
+            <br>
+            <!-- 비밀번호 두개가 동일한지 나타내는 메세지 -->
+            <p id="message"></p>
+
+            <button type="button" id="submitButton" onclick="registerUser();">제출하기</button>
+        </div>
+    </form>
+
+
+    <script>
+        
+        // submitButton.disabled = true; 
+        // input 요소에 입력이 변경될 때마다 중복 체크를 수행하는 이벤트 리스너 추가
+        // usernameInput.addEventListener('input', checkDuplicate);
+        submitButton.disabled = true; 
+        //아이디 중복 확인 함수
+        async function checkDuplicate() {
+             
+            const username = document.getElementById('username').value;
+            
+            if (!username) {
+                // alert("아이디를 입력하세요.");
+                document.getElementById('id_duplicate').innerText = '아이디를 입력하세요';
+                
+                return;
+            }
+
+            try {
+                const response = await fetch(`/join/checkDuplicate?username=${username}`);
+                const data = await response.json();
+                //data 변수는 서버로부터 받은 응답 데이터를 담고 있는 변수
+                //data.duplicate는 duplicate라는 키를 가진 값을 읽는다는 뜻
+
+                console.log('서버 응답:', data); // 서버 응답 확인
+                if (data.duplicate) {
+                    document.getElementById('id_duplicate').innerText = '이미 사용 중인 아이디입니다.';
+                    submitButton.disabled = true;
+                } else {
+                    document.getElementById('id_duplicate').innerText = '사용 가능한 아이디입니다.';
+                    submitButton.disabled = false;;
+                }
+            } catch (error) {
+                console.error('에러 발생:', error);
+            }
+        }
+
+        function resetRegistration(){
+            submitButton.disabled = true;
+        }
+        
+        //비번 조건 만족 & 비번 확인까지
+        function checkPassword(){
+            const password1 = document.getElementById('pw1').value;
+            const password2 = document.getElementById('pw2').value;
+            const message = document.getElementById('message');
+
+
+            const regex = /^(?=.*[A-Za-z])(?=.*\d).{4,}$/;
+
+            if (password2.length > 0) {
+                if (password1 === password2 && regex.test(password1)) {
+                    message.innerHTML = '비밀번호가 일치하고 안전합니다.';
+                    //  submitButton.disabled = false;
+                } else {
+                    message.innerHTML = '비밀번호가 일치하지 않거나 조건을 만족하지 않습니다.';
+                    // submitButton.disabled = true;
+                }
+            } else {
+                // pw2가 비어있을 때는 메시지를 숨김
+                message.innerHTML = '';
+
+                if (regex.test(password1)) {
+                    message.innerHTML = '안전한 비밀번호입니다.';
+                    // submitButton.disabled = false;
+                } else {
+                    message.innerHTML = '영어와 숫자 조합으로 4글자 이상 입력하세요.';
+                    //  submitButton.disabled = true;
+                }
+            }}
+            
+        async function registerUser() {
+            const username = document.getElementById('username').value;
+            const password1 = document.getElementById('pw1').value;
+            const password2 = document.getElementById('pw2').value;
+            console.log('아이디 전달');
+            // 입력값 유효성 검사
+            if (!username || !password1 || !password2) {
+                alert("모든 필드를 입력하세요.");
+                return;
+            }
+
+            if (password1 !== password2) {
+                alert('비밀번호가 일치하지 않습니다.');
+                return;
+            }
+
+            // 서버로 회원가입 데이터 전송
+            try {
+                const response = await fetch('/join/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        user_id: username,
+                        password: password1,
+                    }),
+                });
+                // 서버에서 받은 응답 전체를 콘솔에 출력
+                console.log('서버 응답:', response);        
+                const result_msg = await response.json();
+                console.log('서버 응답:', result_msg);
+
+                if (result_msg.success) {
+                    alert('회원가입이 완료되었습니다.');
+                    window.location.href = '/login';
+                } else {
+                    alert('회원가입에 실패하였습니다.');
+                }
+            } catch (error) {
+                console.error('에러 발생:', error);
+                alert('가입 중 오류 발생');
+            }
+        }
+
+    </script>
+
+  </body>
+  
+</html>

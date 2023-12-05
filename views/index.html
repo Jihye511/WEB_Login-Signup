@@ -1,13 +1,33 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>HTML 5 Boilerplate</title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+  </head>
+  <body style="background-color:rgb(174, 216, 233)">
+    <h1>환영합니다 고객님!!!</h1>
+    <script>
+      function checkToken(){
+        const storedToken1 = localStorage.getItem('token');
+        const storedToken2 = sessionStorage.getItem('token');
+        if(storedToken1){
+          console.log('로컬 토큰이 있습니다.');
+        }else if(storedToken2){
+          console.log('세션 토큰이 있습니다.');
+        } else {
+          console.log('로컬 토큰이 없습니다. 로그인 페이지로 이동합니다.');
+          window.location.href = '/login';
+        }
+      }
 
-<head>
-  <title>Express</title>
-  <link rel="stylesheet" href="/stylesheets/style.css">
-</head>
+        checkToken();
 
-<body>
-  <h1>Express</h1>
-  <p>Welcome to Express</p>
-</body>
 
+    </script>
+    <script src="/routes/index.js"></script>
+  </body>
 </html>
